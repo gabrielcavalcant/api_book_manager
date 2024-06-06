@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime;
+using book_manager.Repository;
 
 namespace book_manager.Business
 {
@@ -14,7 +15,7 @@ namespace book_manager.Business
 
         public DataTable GetCustumers(int id)
         {
-            Repository _Repository = new Repository();
+            ImpRepository _Repository = new ImpRepository();
             SqlParameter[] parameter =
             {
                 new SqlParameter("id", id),
