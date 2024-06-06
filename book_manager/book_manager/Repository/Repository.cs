@@ -6,7 +6,7 @@ using System.IO;
 
 namespace book_manager.Repository
 {
-    public class Repository
+    public class ImpRepository
     {
         public DataTable ExecuteProcedure(string procedureName, SqlParameter[] parameters)
         {
