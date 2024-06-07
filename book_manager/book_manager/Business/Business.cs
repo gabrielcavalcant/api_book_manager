@@ -19,7 +19,7 @@ namespace book_manager.Business
             return _repository.ExecuteProcedure("[dbo].[prGET_BOOKS]", null);
         }
 
-        public void AddBook(Livro livro)
+        public DataTable AddBook(Livro livro)
         {
             SqlParameter[] parameters =
             {
@@ -28,10 +28,10 @@ namespace book_manager.Business
                 new SqlParameter("Genero", livro.Genero),
                 new SqlParameter("Emprestimo", livro.Emprestimo),
             };
-            _repository.ExecuteNonQueryProcedure("[dbo].[prADD_BOOK]", parameters);
+            return _repository.ExecuteProcedure("[dbo].[prADD_BOOK]", parameters);
         }
 
-        public void UpdateBook(Livro livro)
+        public DataTable UpdateBook(Livro livro)
         {
             SqlParameter[] parameters =
             {
@@ -41,16 +41,16 @@ namespace book_manager.Business
                 new SqlParameter("Genero", livro.Genero),
                 new SqlParameter("Emprestimo", livro.Emprestimo),
             };
-            _repository.ExecuteNonQueryProcedure("[dbo].[prUPDATE_BOOK]", parameters);
+            return _repository.ExecuteProcedure("[dbo].[prUPDATE_BOOK]", parameters);
         }
 
-        public void DeleteBook(int id)
+        public DataTable DeleteBook(int id)
         {
             SqlParameter[] parameters =
             {
                 new SqlParameter("Id", id),
             };
-            _repository.ExecuteNonQueryProcedure("[dbo].[prDELETE_BOOK]", parameters);
+            return _repository.ExecuteProcedure("[dbo].[prDELETE_BOOK]", parameters);
         }
     }
 }
