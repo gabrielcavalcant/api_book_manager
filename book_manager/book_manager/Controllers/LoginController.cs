@@ -27,18 +27,18 @@ namespace book_manager.Controllers
 
                 if (user == null)
                 {
-                    return NotFound(new { message = "Usuï¿½rio ou senha invï¿½lidos" });
+                    return NotFound(new { message = "Usuário ou senha inválidos" });
                 }
 
                 var (token, expiration) = TokenService.GenerateToken(user);
 
-                // Obter o fuso horï¿½rio de Sï¿½o Paulo
+                // Obter o fuso horário de São Paulo
                 var saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
 
-                // Converter a data de expiraï¿½ï¿½o para o fuso horï¿½rio de Sï¿½o Paulo
+                // Converter a data de expiração para o fuso horário de São Paulo
                 var localExpiration = TimeZoneInfo.ConvertTimeFromUtc(expiration, saoPauloTimeZone);
 
-                // Formatar a data de expiraï¿½ï¿½o para exibiï¿½ï¿½o
+                // Formatar a data de expiração para exibição
                 var formattedExpiration = localExpiration.ToString("dd-MM-yyyy HH:mm:ss");
 
                 // Gerar o refresh token
@@ -47,7 +47,7 @@ namespace book_manager.Controllers
                 // Salvar o refresh token
                 TokenService.SaveRefreshToken(user.Username, refreshToken);
 
-                // Limpar a senha do usuï¿½rio antes de retornar os dados
+                // Limpar a senha do usuário antes de retornar os dados
                 user.Password = "";
 
                 return new
@@ -74,35 +74,35 @@ namespace book_manager.Controllers
             {
                 if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(refreshToken))
                 {
-                    return BadRequest(new { message = "Token ou token de atualizaï¿½ï¿½o invï¿½lidos" });
+                    return BadRequest(new { message = "Token ou token de atualização inválidos" });
                 }
 
                 var principal = TokenService.GetPrincipalFromExpiredToken(token);
                 if (principal == null)
                 {
-                    return Unauthorized(new { message = "Token de acesso invï¿½lido" });
+                    return Unauthorized(new { message = "Token de acesso inválido" });
                 }
 
                 var username = principal.Identity.Name;
                 var savedRefreshToken = TokenService.GetRefreshToken(username);
                 if (savedRefreshToken != refreshToken)
                 {
-                    return Unauthorized(new { message = "Token de atualizaï¿½ï¿½o invï¿½lido" });
+                    return Unauthorized(new { message = "Token de atualização inválido" });
                 }
 
-                // Aqui vocï¿½ pode verificar as permissï¿½es do usuï¿½rio, se necessï¿½rio
+                // Aqui você pode verificar as permissões do usuário, se necessário
 
                 var newJwtToken = TokenService.GenerateToken(principal.Claims);
                 var newRefreshToken = TokenService.GenerateRefreshToken();
                 TokenService.DeleteRefreshToken(username, refreshToken);
                 TokenService.SaveRefreshToken(username, newRefreshToken);
-                var expiration = newJwtToken.Expiration; ; // Supondo que ValidTo contï¿½m a data de expiraï¿½ï¿½o do token
+                var expiration = newJwtToken.Expiration; ; // Supondo que ValidTo contém a data de expiração do token
 
-                // Converter a data de expiraï¿½ï¿½o para o fuso horï¿½rio de Sï¿½o Paulo, se necessï¿½rio
+                // Converter a data de expiração para o fuso horário de São Paulo, se necessário
                 var saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
                 var localExpiration = TimeZoneInfo.ConvertTimeFromUtc(expiration, saoPauloTimeZone);
 
-                // Formatar a data de expiraï¿½ï¿½o para exibiï¿½ï¿½o
+                // Formatar a data de expiração para exibição
                 var formattedExpiration = localExpiration.ToString("dd-MM-yyyy HH:mm:ss");
 
 
@@ -115,7 +115,7 @@ namespace book_manager.Controllers
             }
             catch (SecurityTokenException ex)
             {
-                return Unauthorized(new { message = "Token de acesso invï¿½lido" });
+                return Unauthorized(new { message = "Token de acesso inválido" });
             }
             catch (Exception ex)
             {
