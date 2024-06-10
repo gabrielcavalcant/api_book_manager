@@ -130,4 +130,59 @@ public class LivrosController : ControllerBase
         // Implementar a validação do token conforme necessário
         return true;
     }
+    [HttpPost("{titulo}/{genero}/{emprestado}")]
+    public ActionResult Post(string titulo, string genero, bool emprestado)
+    {
+        try
+        {
+            if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                return BadRequest(new { message = "Favor inserir o token" });
+            }
+
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!IsTokenValid(token))
+            {
+                return BadRequest(new { message = "Token expirado!" });
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+
+            SecurityToken validatedToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
+            {
+                return Unauthorized(new { message = "Token sem permissão" });
+            }
+
+            var livro = new Livro
+            {
+                Titulo = titulo,
+                Genero = genero,
+                Emprestado = emprestado
+            };
+
+            _business.AdicionarLivro(livro);
+            return Ok(new { message = "Livro adicionado com sucesso!" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
+        }
+    }
+
 }
+
