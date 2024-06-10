@@ -64,7 +64,7 @@ namespace book_manager.Controllers
             }
         }
 
-        
+
 
 
         [HttpPost("refresh")]
@@ -113,7 +113,7 @@ namespace book_manager.Controllers
                     expiration = formattedExpiration
                 });
             }
-            catch (SecurityTokenException ex)
+            catch (SecurityTokenException)
             {
                 return Unauthorized(new { message = "Token de acesso inv�lido" });
             }
@@ -123,6 +123,6 @@ namespace book_manager.Controllers
             }
         }
 
-
+    }
         
 }
