@@ -8,10 +8,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using book_manager.Business;
+using book_manager;
 
 [Route("api/[controller]")]
 [ApiController]
-public class LivrosController : ControllerBase
+public class SearchController : ControllerBase
 {
     private readonly Business _business;
 
@@ -175,7 +176,7 @@ public class LivrosController : ControllerBase
                 Emprestado = emprestado
             };
 
-            _business.AdicionarLivro(livro);
+            _business.AddBook(livro);
             return Ok(new { message = "Livro adicionado com sucesso!" });
         }
         catch (Exception ex)
@@ -229,7 +230,7 @@ public class LivrosController : ControllerBase
                 Emprestado = emprestado
             };
 
-            _business.AtualizarLivro(id, livro);
+            _business.UpdateBook(id, livro);
             return Ok(new { message = "Livro atualizado com sucesso!" });
         }
         catch (Exception ex)
@@ -275,7 +276,7 @@ public class LivrosController : ControllerBase
                 return Unauthorized(new { message = "Token sem permissão" });
             }
 
-            _business.RemoverLivro(id);
+            _business.DeleteBook(id);
             return Ok(new { message = "Livro removido com sucesso!" });
         }
         catch (Exception ex)
