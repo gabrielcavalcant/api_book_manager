@@ -72,3 +72,7 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+book_manager/book_manager/obj/Debug/net5.0/book_manager.AssemblyInfo.cs
+book_manager/book_manager/obj/Debug/net5.0/book_manager.AssemblyInfoInputs.cache
+book_manager/book_manager/obj/Debug/net5.0/book_manager.assets.cache
