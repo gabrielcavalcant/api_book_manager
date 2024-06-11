@@ -1,0 +1,8 @@
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.csproj.AssemblyReference.cache
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.AssemblyInfoInputs.cache
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.AssemblyInfo.cs
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.csproj.CoreCompileInputs.cache
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\GABRIEL CAVALCANTE\Desktop\Nova pasta\api_book_manager\book_manager\book_manager\obj\Debug\net5.0\book_manager.sourcelink.json
