@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using book_manager.Business;
 using book_manager;
+using book_manager.Models;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -124,14 +125,61 @@ public class SearchController : ControllerBase
         }
     }
 
-
-    private bool IsTokenValid(string token)
+    [HttpGet("books")]
+    public ActionResult GetBooks()
     {
-        
-        return true;
+        try
+        {
+            // Verificar se o cabeçalho Authorization está presente
+            if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                return BadRequest(new { message = "Favor inserir o token" });
+            }
+
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!IsTokenValid(token))
+            {
+                return BadRequest(new { message = "Token expirado!" });
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+
+            // Configura os parâmetros de validação do token
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+
+            SecurityToken validatedToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // Verificar se o usuário tem as permissões necessárias
+            if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
+            {
+                return Unauthorized(new { message = "Token sem permissão" });
+            }
+
+            // Buscar todos os livros
+            var books = _business.GetBooks();
+
+            return Content(JsonConvert.SerializeObject(books), "application/json");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
+        }
     }
-    [HttpPost("{titulo}/{genero}/{emprestado}")]
-    public ActionResult Post(string titulo, string genero, bool emprestado)
+
+
+    [HttpPost("{titulo}/{genero}/{Emprestimo}")]
+    public ActionResult Post(string titulo, string genero, bool Emprestimo)
     {
         try
         {
@@ -172,7 +220,7 @@ public class SearchController : ControllerBase
             {
                 Titulo = titulo,
                 Genero = genero,
-                Emprestado = emprestado
+                Emprestimo = Emprestimo
             };
 
             _business.AddBook(livro);
@@ -183,8 +231,8 @@ public class SearchController : ControllerBase
             return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
         }
     }
-    [HttpPut("{id}/{titulo}/{genero}/{emprestado}")]
-    public ActionResult Put(int id, string titulo, string genero, bool emprestado)
+    [HttpPut("{id}/{titulo}/{genero}/{Emprestimo}")]
+    public ActionResult Put(int id, string titulo, string genero, bool Emprestimo)
     {
         try
         {
@@ -226,7 +274,7 @@ public class SearchController : ControllerBase
                 Id = id,
                 Titulo = titulo,
                 Genero = genero,
-                Emprestado = emprestado
+                Emprestimo = Emprestimo
             };
 
             _business.UpdateBook(id, livro);
@@ -283,7 +331,44 @@ public class SearchController : ControllerBase
             return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
         }
     }
+    private static bool IsTokenValid(string token)
+    {
+        var expirationToken = GetExpirationDate(token);
+        if (expirationToken > DateTime.UtcNow)
+        {
+            // O token ainda não expirou
+            return true;
+        }
+        else
+        {
+            return false;// O token expirou ou não tem data de expiração definido///
+        }
+    }
+    public static DateTime? GetExpirationDate(string token)
+    {
+        var jwtHandler = new JwtSecurityTokenHandler();
 
+        if (jwtHandler.CanReadToken(token))
+        {
+            try
+            {
+                var jwtToken = jwtHandler.ReadToken(token) as JwtSecurityToken;
+                if (jwtToken != null)
+                {
+                    var expirationDate = jwtToken.ValidTo;
+                    return expirationDate;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        return null;
+    }
 
 }
+
+
 
