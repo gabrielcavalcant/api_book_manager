@@ -11,6 +11,7 @@ using book_manager.Business;
 using book_manager;
 using book_manager.Models;
 
+
 [Route("api/[controller]")]
 [ApiController]
 public class SearchController : ControllerBase
@@ -73,6 +74,9 @@ public class SearchController : ControllerBase
             return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
         }
     }
+
+
+
     [HttpPost("validate")]
     public IActionResult ValidateToken()
     {
@@ -124,6 +128,9 @@ public class SearchController : ControllerBase
             return StatusCode(500, new { message = $"Ocorreu um erro: {ex.Message}" });
         }
     }
+
+
+
 
     [HttpGet("books")]
     public ActionResult GetBooks()
@@ -178,8 +185,9 @@ public class SearchController : ControllerBase
     }
 
 
-    [HttpPost("{titulo}/{genero}/{Emprestimo}")]
-    public ActionResult Post(string titulo, string genero, bool Emprestimo)
+
+    [HttpPost("{titulo}/{autor}/{genero}/{Emprestimo}")]
+    public ActionResult Post(string titulo, string autor, string genero, bool Emprestimo)
     {
         try
         {
@@ -219,6 +227,7 @@ public class SearchController : ControllerBase
             var livro = new Livro
             {
                 Titulo = titulo,
+                Autor = autor,
                 Genero = genero,
                 Emprestimo = Emprestimo
             };
@@ -231,8 +240,11 @@ public class SearchController : ControllerBase
             return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
         }
     }
-    [HttpPut("{id}/{titulo}/{genero}/{Emprestimo}")]
-    public ActionResult Put(int id, string titulo, string genero, bool Emprestimo)
+
+
+
+    [HttpPut("{id}/{titulo}/{autor}/{genero}/{Emprestimo}")]
+    public ActionResult Put(int id, string titulo, string autor, string genero, bool Emprestimo)
     {
         try
         {
@@ -273,6 +285,7 @@ public class SearchController : ControllerBase
             {
                 Id = id,
                 Titulo = titulo,
+                Autor = autor,
                 Genero = genero,
                 Emprestimo = Emprestimo
             };
@@ -285,6 +298,9 @@ public class SearchController : ControllerBase
             return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
         }
     }
+
+
+
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
@@ -331,6 +347,9 @@ public class SearchController : ControllerBase
             return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
         }
     }
+
+
+
     private static bool IsTokenValid(string token)
     {
         var expirationToken = GetExpirationDate(token);
