@@ -118,8 +118,7 @@ public class SearchController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Logar o erro (dependendo do framework de logging que você está usando)
-            // Logger.LogError(ex, "An error occurred while validating the token.");
+           
 
             return StatusCode(500, new { message = $"Ocorreu um erro: {ex.Message}" });
         }
@@ -128,7 +127,7 @@ public class SearchController : ControllerBase
 
     private bool IsTokenValid(string token)
     {
-        // Implementar a validação do token conforme necessário
+        
         return true;
     }
     [HttpPost("{titulo}/{genero}/{emprestado}")]
