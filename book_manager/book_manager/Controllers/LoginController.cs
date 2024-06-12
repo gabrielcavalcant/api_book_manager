@@ -10,8 +10,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-
-
 namespace book_manager.Controllers
 {
     [ApiController]
@@ -32,8 +30,20 @@ namespace book_manager.Controllers
 
                 var (token, expiration) = TokenService.GenerateToken(user);
 
-                // Obter o fuso horário de São Paulo
-                var saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+                // Obter o fuso horário de São Paulo com fallback
+                TimeZoneInfo saoPauloTimeZone;
+                try
+                {
+                    saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    saoPauloTimeZone = TimeZoneInfo.Local;
+                }
+                catch (InvalidTimeZoneException)
+                {
+                    saoPauloTimeZone = TimeZoneInfo.Local;
+                }
 
                 // Converter a data de expiração para o fuso horário de São Paulo
                 var localExpiration = TimeZoneInfo.ConvertTimeFromUtc(expiration, saoPauloTimeZone);
@@ -64,9 +74,6 @@ namespace book_manager.Controllers
             }
         }
 
-
-
-
         [HttpPost("refresh")]
         public IActionResult Refresh(string token, string refreshToken)
         {
@@ -96,15 +103,27 @@ namespace book_manager.Controllers
                 var newRefreshToken = TokenService.GenerateRefreshToken();
                 TokenService.DeleteRefreshToken(username, refreshToken);
                 TokenService.SaveRefreshToken(username, newRefreshToken);
-                var expiration = newJwtToken.Expiration; ; // Supondo que ValidTo contém a data de expiração do token
+                var expiration = newJwtToken.Expiration; // Supondo que ValidTo contém a data de expiração do token
 
-                // Converter a data de expiração para o fuso horário de São Paulo, se necessário
-                var saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+                // Converter a data de expiração para o fuso horário de São Paulo com fallback
+                TimeZoneInfo saoPauloTimeZone;
+                try
+                {
+                    saoPauloTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    saoPauloTimeZone = TimeZoneInfo.Local;
+                }
+                catch (InvalidTimeZoneException)
+                {
+                    saoPauloTimeZone = TimeZoneInfo.Local;
+                }
+
                 var localExpiration = TimeZoneInfo.ConvertTimeFromUtc(expiration, saoPauloTimeZone);
 
                 // Formatar a data de expiração para exibição
                 var formattedExpiration = localExpiration.ToString("dd-MM-yyyy HH:mm:ss");
-
 
                 return Ok(new
                 {
@@ -122,7 +141,5 @@ namespace book_manager.Controllers
                 return StatusCode(500, JsonConvert.SerializeObject($"Erro ao atualizar token: {ex.Message}"));
             }
         }
-
     }
-        
 }
