@@ -28,10 +28,18 @@ namespace book_manager
         {
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddInfrastructureSwagger();
+
+            services.AddAuthorization(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "book_manager", Version = "v1" });
+                options.AddPolicy("ManagerPolicy", policy =>
+                    policy.RequireRole("Manager"));
             });
+
+        //    services.AddSwaggerGen(c =>
+        //    {
+        //        c.SwaggerDoc("v1", new OpenApiInfo { Title = "book_manager", Version = "v1" });
+        //    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
