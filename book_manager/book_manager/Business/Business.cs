@@ -16,15 +16,6 @@ namespace book_manager.Business
             _repository = new ImpRepository();
         }
 
-        public DataTable GetBooks()
-        {
-            SqlParameter[] parameters =
-            {
-                new SqlParameter("@id", id),
-            };
-            return _repository.ExecuteProcedure("[dbo].[prGET_CUSTUMERS]", parameters);
-        }
-
         public DataTable GetLivrosByGeneroAndTitulo(string genero, string titulo)
         {
             SqlParameter[] parameters =
