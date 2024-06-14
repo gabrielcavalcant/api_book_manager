@@ -25,7 +25,7 @@ namespace book_mvc.Controllers
             List<BookViewModel> booksList = new List<BookViewModel>();
             try
             {
-                HttpResponseMessage response = await _httpClient.GetAsync("api/Search/books");
+                HttpResponseMessage response = await _httpClient.GetAsync("api/Search/Books");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -58,8 +58,10 @@ namespace book_mvc.Controllers
             {
                 try
                 {
-                    var content = new StringContent(JsonConvert.SerializeObject(book), Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await _httpClient.PostAsync($"api/Search/{book.Titulo}/{book.Autor}/{book.Genero}/{book.Emprestimo}", content);
+                    var json = JsonConvert.SerializeObject(book);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await _httpClient.PostAsync("api/Search/Post", content);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -110,8 +112,10 @@ namespace book_mvc.Controllers
             {
                 try
                 {
-                    var content = new StringContent(JsonConvert.SerializeObject(book), Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await _httpClient.PutAsync($"api/Search/{book.Id}/{book.Titulo}/{book.Autor}/{book.Genero}/{book.Emprestimo}", content);
+                    var json = JsonConvert.SerializeObject(book);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await _httpClient.PutAsync("https://localhost:44379/api/Search/Put", content);
 
                     if (response.IsSuccessStatusCode)
                     {
