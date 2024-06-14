@@ -115,7 +115,7 @@ namespace book_mvc.Controllers
                     var json = JsonConvert.SerializeObject(book);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = await _httpClient.PutAsync("https://localhost:44379/api/Search/Put", content);
+                    HttpResponseMessage response = await _httpClient.PutAsync("api/Search/Put", content);
 
                     if (response.IsSuccessStatusCode)
                     {
