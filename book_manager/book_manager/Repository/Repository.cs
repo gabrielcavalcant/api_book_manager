@@ -10,7 +10,10 @@ namespace book_manager.Repository
     {
         public DataTable ExecuteProcedure(string procedureName, SqlParameter[] parameters)
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -24,10 +27,11 @@ namespace book_manager.Repository
                     SqlCommand command = new SqlCommand(procedureName, sqlConnection);
                     command.CommandType = CommandType.StoredProcedure;
 
-                    if (parameters == null)
+                    if (parameters != null)
                     {
-                        command.Parameters.Add(new SqlDataAdapter(command));
+                        command.Parameters.AddRange(parameters);
                     }
+
                     SqlDataAdapter adapter = new SqlDataAdapter(command);
                     adapter.Fill(dataSet);
                 }
@@ -42,5 +46,6 @@ namespace book_manager.Repository
             }
             return dataSet;
         }
+
     }
 }
