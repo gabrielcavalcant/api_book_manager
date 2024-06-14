@@ -7,7 +7,6 @@ namespace book_mvc.Models
     {
         public int Id { get; set; }
         [Required]
-        [DisplayName("Title")]
         public string Titulo { get; set; }
         [Required]
         public string Autor { get; set; }
