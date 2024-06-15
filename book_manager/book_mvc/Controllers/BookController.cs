@@ -1,4 +1,5 @@
 ﻿using book_mvc.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -159,12 +160,12 @@ namespace book_mvc.Controllers
             return View(book);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteConfirmed")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                HttpResponseMessage response = await _httpClient.DeleteAsync($"api/Search/{id}");
+                HttpResponseMessage response = await _httpClient.DeleteAsync($"api/Search/Delete/{id}");
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -1,8 +1,6 @@
-using book_manager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,12 +19,9 @@ namespace book_manager
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<book_manager.Business.Business>();
-
-            services.AddAuthorization();
 
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
 
@@ -55,16 +50,36 @@ namespace book_manager
                     options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                 });
 
-            services.AddInfrastructureSwagger();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "book_manager", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }});
+            });
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ManagerPolicy", policy =>
-                    policy.RequireRole("Manager"));
+                options.AddPolicy("ManagerPolicy", policy => policy.RequireRole("Manager"));
             });
 
-            // Adicionar CORS
-            // Adicione a política de CORS
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAnyOrigin",
@@ -77,7 +92,6 @@ namespace book_manager
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -88,12 +102,10 @@ namespace book_manager
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseCors("AllowAnyOrigin");
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.UseEndpoints(endpoints =>
             {
