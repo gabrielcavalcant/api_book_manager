@@ -1,5 +1,10 @@
 # Documentação do Projeto
 
+## Integrantes:
+
+### Gabriel Cavalcante
+### Renan Henrique de Oliveira
+
 ## 1. Introdução
 
 ### Visão Geral do Projeto
