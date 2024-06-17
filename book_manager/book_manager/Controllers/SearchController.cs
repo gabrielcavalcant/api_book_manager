@@ -10,6 +10,7 @@ using System.Text;
 using book_manager.Business;
 using book_manager;
 using book_manager.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 [Route("api/[controller]")]
@@ -23,73 +24,24 @@ public class SearchController : ControllerBase
         _business = business;
     }
 
-    [HttpGet("")]
-    public ActionResult Get(string genero, string titulo)
+    [HttpGet("Books")]
+    public ActionResult GetBooks()
     {
         try
         {
             Console.WriteLine("Get Chamado");
-            //// Verificar se o cabe�alho Authorization est� presente
-            //if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
-            //{
-            //    return BadRequest(new { message = "Favor inserir o token" });
-            //}
-
-            //var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-            //if (!IsTokenValid(token))
-            //{
-            //    return BadRequest(new { message = "Token expirado!" });
-            //}
-
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(Settings.Secret);
-
-            //// Configura os par�metros de valida��o do token
-            //var tokenValidationParameters = new TokenValidationParameters
-            //{
-            //    ValidateIssuer = false,
-            //    ValidateAudience = false,
-            //    ValidateLifetime = true,
-            //    ValidateIssuerSigningKey = true,
-            //    IssuerSigningKey = new SymmetricSecurityKey(key)
-            //};
-
-            //SecurityToken validatedToken;
-            //var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
-            //var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            //// Verificar se o usu�rio tem as permiss�es necess�rias
-            //if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
-            //{
-            //    return Unauthorized(new { message = "Token sem permiss�o" });
-            //}
-
-            // Filtrar livros por g�nero e t�tulo
-            var livros = _business.GetLivrosByGeneroAndTitulo(genero, titulo);
-
-            return Content(JsonConvert.SerializeObject(livros), "application/json");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
-        }
-    }
-
-
-
-    [HttpPost("validate")]
-    public IActionResult ValidateToken()
-    {
-        try
-        {
-            // Verifica se o token de autoriza��o est� presente no cabe�alho da solicita��o
+            // Verificar se o cabe�alho Authorization est� presente
             if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
             {
                 return BadRequest(new { message = "Favor inserir o token" });
             }
 
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (!IsTokenValid(token))
+            {
+                return BadRequest(new { message = "Token expirado!" });
+            }
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
@@ -106,74 +58,13 @@ public class SearchController : ControllerBase
 
             SecurityToken validatedToken;
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            // Verifica se o token � v�lido
-            if (!IsTokenValid(token))
-            {
-                return BadRequest(new { message = "Token expirado!" });
-            }
-
-            // Verifica se o usu�rio tem permiss�o para acessar a rota
-            var roles = principal.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-            if (!roles.Contains("Manager") && !roles.Contains("ManagerPolicy"))
+            // Verificar se o usu�rio tem as permiss�es necess�rias
+            if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
             {
                 return Unauthorized(new { message = "Token sem permiss�o" });
             }
-
-            return Ok(new { message = "Token v�lido" });
-        }
-        catch (Exception ex)
-        {
-           
-
-            return StatusCode(500, new { message = $"Ocorreu um erro: {ex.Message}" });
-        }
-    }
-
-
-
-
-    [HttpGet("Books")]
-    public ActionResult GetBooks()
-    {
-        try
-        {
-            Console.WriteLine("Get Chamado");
-            //// Verificar se o cabe�alho Authorization est� presente
-            //if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
-            //{
-            //    return BadRequest(new { message = "Favor inserir o token" });
-            //}
-
-            //var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-            //if (!IsTokenValid(token))
-            //{
-            //    return BadRequest(new { message = "Token expirado!" });
-            //}
-
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(Settings.Secret);
-
-            //// Configura os par�metros de valida��o do token
-            //var tokenValidationParameters = new TokenValidationParameters
-            //{
-            //    ValidateIssuer = false,
-            //    ValidateAudience = false,
-            //    ValidateLifetime = true,
-            //    ValidateIssuerSigningKey = true,
-            //    IssuerSigningKey = new SymmetricSecurityKey(key)
-            //};
-
-            //SecurityToken validatedToken;
-            //var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
-            //var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            //// Verificar se o usu�rio tem as permiss�es necess�rias
-            //if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
-            //{
-            //    return Unauthorized(new { message = "Token sem permiss�o" });
-            //}
 
             // Buscar todos os livros
             var books = _business.GetBooks();
@@ -194,38 +85,38 @@ public class SearchController : ControllerBase
         try
         {
             Console.WriteLine("Post Chamado");
-            //if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
-            //{
-            //    return BadRequest(new { message = "Favor inserir o token" });
-            //}
+            if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                return BadRequest(new { message = "Favor inserir o token" });
+            }
 
-            //var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            //if (!IsTokenValid(token))
-            //{
-            //    return BadRequest(new { message = "Token expirado!" });
-            //}
+            if (!IsTokenValid(token))
+            {
+                return BadRequest(new { message = "Token expirado!" });
+            }
 
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
 
-            //var tokenValidationParameters = new TokenValidationParameters
-            //{
-            //    ValidateIssuer = false,
-            //    ValidateAudience = false,
-            //    ValidateLifetime = true,
-            //    ValidateIssuerSigningKey = true,
-            //    IssuerSigningKey = new SymmetricSecurityKey(key)
-            //};
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
 
-            //SecurityToken validatedToken;
-            //var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
-            //var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            SecurityToken validatedToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            //if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
-            //{
-            //    return Unauthorized(new { message = "Token sem permiss�o" });
-            //}
+            if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
+            {
+                return Unauthorized(new { message = "Token sem permiss�o" });
+            }
 
             var livro = new Livro
             {
@@ -252,38 +143,38 @@ public class SearchController : ControllerBase
         try
         {
             Console.WriteLine("Put Chamado");
-            //if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
-            //{
-            //    return BadRequest(new { message = "Favor inserir o token" });
-            //}
+            if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                return BadRequest(new { message = "Favor inserir o token" });
+            }
 
-            //var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            //if (!IsTokenValid(token))
-            //{
-            //    return BadRequest(new { message = "Token expirado!" });
-            //}
+            if (!IsTokenValid(token))
+            {
+                return BadRequest(new { message = "Token expirado!" });
+            }
 
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
 
-            //var tokenValidationParameters = new TokenValidationParameters
-            //{
-            //    ValidateIssuer = false,
-            //    ValidateAudience = false,
-            //    ValidateLifetime = true,
-            //    ValidateIssuerSigningKey = true,
-            //    IssuerSigningKey = new SymmetricSecurityKey(key)
-            //};
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
 
-            //SecurityToken validatedToken;
-            //var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
-            //var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            SecurityToken validatedToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            //if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
-            //{
-            //    return Unauthorized(new { message = "Token sem permiss�o" });
-            //}
+            if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
+            {
+                return Unauthorized(new { message = "Token sem permiss�o" });
+            }
 
             var livro = new Livro
             {
@@ -305,61 +196,47 @@ public class SearchController : ControllerBase
 
 
 
-    [HttpDelete("{id}")]
+    [HttpDelete("Delete/{id}")]
     public ActionResult Delete(int id)
     {
         try
         {
             Console.WriteLine("Delete Chamado");
-            //if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
-            //{
-            //    return BadRequest(new { message = "Favor inserir o token" });
-            //}
+            if (!HttpContext.Request.Headers.ContainsKey("Authorization"))
+            {
+                return BadRequest(new { message = "Favor inserir o token" });
+            }
 
-            //var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            //if (!IsTokenValid(token))
-            //{
-            //    return BadRequest(new { message = "Token expirado!" });
-            //}
+            if (!IsTokenValid(token))
+            {
+                return BadRequest(new { message = "Token expirado!" });
+            }
 
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
 
-            //var tokenValidationParameters = new TokenValidationParameters
-            //{
-            //    ValidateIssuer = false,
-            //    ValidateAudience = false,
-            //    ValidateLifetime = true,
-            //    ValidateIssuerSigningKey = true,
-            //    IssuerSigningKey = new SymmetricSecurityKey(key)
-            //};
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
 
-            //SecurityToken validatedToken;
-            //var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
-            //var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            SecurityToken validatedToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            //if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
-            //{
-            //    return Unauthorized(new { message = "Token sem permiss�o" });
-            //}
+            if (!HttpContext.User.IsInRole("Manager") && !HttpContext.User.IsInRole("ManagerPolicy"))
+            {
+                return Unauthorized(new { message = "Token sem permiss�o" });
+            }
 
             _business.DeleteBook(id);
             return Ok(new { message = "Livro removido com sucesso!" });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, JsonConvert.SerializeObject($"Ocorreu um erro: {ex.Message}"));
-        }
-    }
-
-    [HttpPost, ActionName("DeleteConfirmed")]
-    public ActionResult DeleteConfirmed(int id)
-    {
-        try
-        {
-            _business.DeleteBook(id);
-            return RedirectToAction("Index");
         }
         catch (Exception ex)
         {

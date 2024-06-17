@@ -9,7 +9,7 @@ namespace book_manager.Repository
         // Lista estática simulando um banco de dados
         private static List<User> users = new List<User>
         {
-            new User { Id = 1, Username = "admin", Password = "123", Role = "Manager" },
+            new User { Id = 1, Username = "adm", Password = "123", Role = "Manager" },
             new User { Id = 2, Username = "user", Password = "123", Role = "user" }
         };
 
