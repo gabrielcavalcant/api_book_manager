@@ -1,174 +1,169 @@
-# Documentação do Projeto
+# Book Manager
 
-## Integrantes:
+## Descrição
 
-### Gabriel Cavalcante
-### Renan Henrique de Oliveira
+Este projeto é uma API para gerenciar uma biblioteca. Permite realizar operações de CRUD (Create, Read, Update, Delete) para livros. O backend foi desenvolvido em C# utilizando o .NET 5, com o banco de dados SQL Server. O Swagger foi utilizado para documentação da API e o JWT Bearer para autenticação.
 
-## 1. Introdução
+## Funcionalidades
 
-### Visão Geral do Projeto
-Desenvolvimento de uma API em .NET 5 para gerenciar uma aplicação de gestão de livros, incluindo funcionalidades como autenticação de usuários e gerenciamento de produtos.
+- **CRUD de Livros:**
+  - Criar, ler, atualizar e deletar informações de livros.
+- **Autenticação e Autorização:**
+  - Tela de login com autenticação.
+  - Utilização de tokens JWT Bearer para autenticação.
 
-### Objetivos e Propósito do Sistema
-Criar uma API robusta, segura e escalável que permita operações CRUD sobre entidades de usuário e produto, além de fornecer autenticação baseada em JWT.
+## Tecnologias Utilizadas
 
-### Benefícios Esperados do Projeto
-- Facilidade de manutenção
-- Segurança aprimorada
-- Escalabilidade
-- Integração simplificada com frontend, backend e database
+- **Backend:**
+  - Linguagem: C#
+  - Framework: .NET 5
+  - Banco de Dados: SQL Server
+- **Frontend:**
+  - HTML, CSS
+- **Documentação da API:**
+  - Swagger
+- **Autenticação:**
+  - JWT Bearer
 
-## 2. Visão Geral do Sistema
+## Instalação
+1. Baixe Visual Studio Comunity para utilizar C# e .net 5.
 
-### Descrição do Sistema
-API RESTful para um sistema de gestão, oferecendo endpoints para autenticação de usuários e gerenciamento de livros.
+2. Clone o repositório:
+   ```bash
+   git clone https://github.com/gabrielcavalcant/api_book_manager.git
+   cd book_manager
 
-### Público-Alvo do Sistema
-Administradores do sistema e clientes finais da gestão, como os funcionários para auxílio e rapidez no atendimento dos clientes.
+## Configuração do Banco de Dados
 
-### Requisitos Funcionais e Não Funcionais
-O sistema deve ser seguro, escalável, com alta disponibilidade e desempenho.
+### appsettings.json
 
-## 3. Arquitetura do Sistema
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=seu_servidor;Database=sua_base_de_dados;User Id=seu_usuario;Password=sua_senha;"
+  }
+}
+```
 
-### Explicação da Arquitetura MVC (Model-View-Controller)
-A arquitetura MVC separa a aplicação em três componentes principais:
-- **Models**: Dados e lógica de negócios.
-- **Views**: Interfaces de usuário (não aplicável diretamente em uma API).
-- **Controllers**: Intermediários que tratam as requisições e coordenam as respostas.
+## Restaure os pacotes NuGet
 
-### Papel de Cada Componente
-- **Models**: Representam as entidades e a lógica de negócios.
-- **Controllers**: Gerenciam a lógica de entrada do usuário e interagem com os modelos.
-- **Views**: Não aplicável diretamente em uma API pois ela fornece dados e não interfaces gráficas.
+Para restaurar os pacotes NuGet, utilize o seguinte comando no terminal:
 
-### Uso do Padrão Repository para Acesso a Dados
-Repositórios encapsulam a lógica de acesso a dados, proporcionando uma abstração sobre a interação com o banco de dados.
+```bash
+dotnet restore
+```
 
-## 4. Requisitos Funcionais
+## Restaure os pacotes NuGet
 
-### Lista Detalhada de Funcionalidades do Sistema
-- Autenticação de usuários com JWT
-- Operações CRUD para usuários, produtos e pedidos
-- Consultas filtradas e paginadas de produtos
+Para restaurar os pacotes NuGet, utilize o seguinte comando no terminal:
 
-### Casos de Uso Principais
-- Usuário registra uma conta
-- Usuário faz login e recebe um token JWT
-- Administrador adiciona, edita ou remove livros com JWT
-- Usuário adiciona, edita ou remove livros com JWT
+```bash
+dotnet restore
+```
 
-## 5. Requisitos Não Funcionais
+## Configuração
 
-### Desempenho Esperado do Sistema
-- Respostas rápidas às requisições
-- Suporte a alta carga de usuários simultâneos
+Execute as migrações para criar o banco de dados com o seguinte comando:
 
-### Segurança e Autenticação
-- Implementação de autenticação JWT
-- Proteção contra ataques comuns como SQL Injection e Cross-Site Scripting (XSS)
+```bash
+dotnet ef database update
+```
 
-### Escalabilidade e Manutenibilidade
-Arquitetura modular para facilitar a manutenção e a escalabilidade horizontal.
+## Execução
 
-## 6. Tecnologias Utilizadas
+Para iniciar a aplicação, utilize o comando abaixo:
 
-- **Linguagens de Programação**: C# e TypeScript
-- **Frameworks**: .NET 5 para backend, Entity Framework Core para ORM, React
-- **Bancos de Dados**: SQL Server ou PostgreSQL
-- **Ferramentas de Desenvolvimento**: Visual Studio, Docker, Git
+```bash
+dotnet run
+```
 
-## 7. Modelo de Dados
+### Acesse a Documentação da API pelo Swagger
 
-### Estrutura do Banco de Dados
-Tabelas para `Users`, `Book` e `Gender`.
+Você pode acessar a documentação da API pelo Swagger utilizando o seguinte endereço no seu navegador:
 
-### Relacionamentos entre Entidades
-Relacionamentos como muitos para muitos entre `Book` e `Gender`.
+```bash
+https://localhost:44379/swagger
+```
 
-### Esquema de Armazenamento
-O banco de dados será configurado inicialmente com todas as tabelas e relacionamentos necessários para o funcionamento da aplicação, e os dados serão enviados para o banco de dados e acessados quando necessário.
+## Uso da API
 
-## 8. Interfaces do Usuário
+### Autenticação e Autorização
 
-### Layout e Design das Interfaces
-As interfaces de usuário serão desenvolvidas utilizando React.js, seguindo as melhores práticas de design e usabilidade. A estrutura dos dados JSON retornados pela API será considerada durante o desenvolvimento das interfaces.
+A API utiliza JWT Bearer tokens para autenticação. Para obter um token JWT, utilize o seguinte endpoint:
 
-### Funcionalidades Específicas de Cada Tela
-Cada tela terá funcionalidades específicas relacionadas à sua finalidade no contexto do sistema de e-commerce, como exibição de produtos, detalhes do carrinho de compras, finalização de pedidos, etc.
+- **POST /v1/login**: Autentica o usuário e retorna um token JWT
+#### Login:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/6cfa60a5-c370-4878-b71d-d65277516dca)
+#### Respota:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/41b32d80-86c1-456d-ae23-706a0a43cbed)
 
-### Fluxos de Interação do Usuário
-Os fluxos de interação do usuário serão definidos de acordo com as necessidades de cada tela, com base nos endpoints bem definidos pela API para cada ação do usuário, garantindo uma experiência de usuário fluida e intuitiva.
+Para realizar requisições autenticadas, envie o token JWT no cabeçalho `Authorization` de cada requisição protegida da seguinte maneira:
 
-## 9. Arquitetura de Implementação
+```http
+Authorization: Bearer seu_token_jwt
+```
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/3a670dca-189c-4418-8906-4d111bec8a18)
 
-### Organização do Código-Fonte
-- **Versionamento Semântico**
-- **Padrões de Commit Semântico**
-- **Models**: Classes representando as entidades.
-- **Repositories**: Interfaces e implementações para acesso a dados.
-- **Services (Business)**: Lógica de negócios.
-- **Controllers**: Endpoints da API.
+### Endpoints
 
-### Divisão em Módulos e Componentes
-Separação clara entre modelos, repositórios, serviços e controladores.
+#### Livros
 
-### Dependências entre os Componentes
-Controladores dependem dos serviços, que por sua vez dependem dos repositórios.
+- **GET /api/Search/books**: Lista todos os livros
+#### Pesquisa de livros:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/800689f3-c0ef-453b-aab7-2acf25726e5d)
+#### Resposta:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/fceb15a8-60c8-48e0-9e85-3b17a047c383)
 
-## 10. Planejamento de Implantação
+- **POST /api/Search/Post**: Adiciona um novo livro
+#### Criação de um novo livro:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/cf8de7f3-2c59-4204-81cc-e9d030230855)
+#### Resposta:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/e38a925a-a8cd-4d43-bb94-f60e361240e8)
 
-### Ambientes de Implantação (Dev, Teste, Produção)
-Configuração de diferentes ambientes com variáveis de ambiente específicas.
+- **PUT /api/Search/Put**: Atualiza informações de um livro
+#### Atualização do dados do livro:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/6dbf6a0d-02ef-4bab-8616-1d736dff53ac)
+#### Resposta:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/433e5095-d7df-47ac-9658-5a837d3397a8)
 
-### Procedimentos de Implantação
-- Uso de Docker para criar imagens e contêineres
-- CI/CD para automação
+- **DELETE /api/Search/Delete/{id}**: Deleta um livro
+#### Exclusão do livro por ID:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/9ff9f869-1c62-4fef-8da0-6331a660db48)
+#### Resposta:
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/86096ae2-7393-4230-8da1-a4420d7c89b5)
 
-### Migração de Dados se Necessário
-Uso de migrations para atualização do banco de dados sem perda de dados.
 
-## 11. Gestão de Configuração e Controle de Versão
 
-### Políticas de Controle de Versão
-Estratégia de branching e versionamento semântico.
+## Templates de Front End
 
-### Ramificação do Código-Fonte
-Uso de Git Flow ou similar para gerenciar branches de desenvolvimento e releases.
+O front end foi desenvolvido com HTML e CSS dentro do .NET. As funcionalidades de CRUD são demonstradas na interface:
 
-### Uso de Ferramentas de Controle de Versão
-Git, hospedado em plataformas como GitHub ou GitLab.
+- **Lista de Livros**: Mostra todos os livros disponíveis.
+  
+  ![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/bbc8ebdc-97ac-4b9f-a685-029fb60359bf)
 
-## 12. Gestão de Projetos
+- **Adicionar Livro**: Formulário para adicionar um novo livro.
+  
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/e3d80da1-8696-4306-ba53-a86b2d4af6b2)
 
-### Cronograma de Desenvolvimento
-Desenvolvimento da API e banco durante as duas primeiras semanas e nas últimas, desenvolvimento do frontend e correção de bugs.
+- **Editar Livro**: Formulário para editar um livro existente.
+  
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/5379f0d0-0429-44a1-bc00-a68c85d91874)
 
-### Atribuição de Tarefas e Responsabilidades
-Equipe com papéis definidos, ambos com o desenvolvimento fullstack, atribuindo partes específicas para cada desenvolvedor de acordo com o grau de compreensão da parte escolhida.
+- **Deletar Livro**: Opção para deletar um livro.
+  
+![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/8c35dfa2-d763-4d37-8992-85b3c2f95740)
 
-### Monitoramento do Progresso do Projeto
-Uso de ferramentas como Trello ou GitHub para acompanhamento de tarefas.
 
-## 13. Considerações de Segurança
+## Contato
 
-### Mecanismos de Autenticação e Autorização
-Implementação de JWT para autenticação, políticas de autorização baseadas em roles.
+Para mais informações, entre em contato:
 
-### Proteção contra Vulnerabilidades Conhecidas
-Validação de entrada, proteção contra injeção de SQL, XSS, CSRF, etc.
+- **Nome**: Gabriel Cavalcante
+- **Email**: gabriel_sep@outlook.com
+- **LinkedIn**: [Gabriel Cavalcante](https://www.linkedin.com/in/--gabrielcavalcante/)
+---
+- **Nome**: Renan Henrique de Oliveira
+- **Email**: renanoliveira30@hotmail.com
+- **LinkedIn**: [Renan Henrique de Oliveira](https://www.linkedin.com/in/renan-henrique-nunjiswoo/)
 
-### Auditoria e Registro de Atividades Sensíveis
-Logging e monitoramento de ações críticas no sistema.
-
-## 14. Considerações de Manutenção
-
-### Planos de Suporte Pós-Implantação
-Definição de SLA para suporte e manutenção.
-
-### Processo de Correção de Bugs e Implementação de Melhorias
-Procedimentos claros para reporte e resolução de bugs, bem como para sugestões de melhorias.
-
-### Atualizações de Segurança e de Software
-Políticas para atualização regular de dependências e patches de segurança.
