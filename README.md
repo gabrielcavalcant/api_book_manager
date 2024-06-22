@@ -53,13 +53,6 @@ Para restaurar os pacotes NuGet, utilize o seguinte comando no terminal:
 dotnet restore
 ```
 
-## Restaure os pacotes NuGet
-
-Para restaurar os pacotes NuGet, utilize o seguinte comando no terminal:
-
-```bash
-dotnet restore
-```
 
 ## Configuração
 
@@ -94,7 +87,7 @@ A API utiliza JWT Bearer tokens para autenticação. Para obter um token JWT, ut
 - **POST /v1/login**: Autentica o usuário e retorna um token JWT
 #### Login:
 ![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/6cfa60a5-c370-4878-b71d-d65277516dca)
-#### Respota:
+#### Resposta:
 ![image](https://github.com/gabrielcavalcant/api_book_manager/assets/123522657/41b32d80-86c1-456d-ae23-706a0a43cbed)
 
 Para realizar requisições autenticadas, envie o token JWT no cabeçalho `Authorization` de cada requisição protegida da seguinte maneira:
